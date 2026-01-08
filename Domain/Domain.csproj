@@ -22,14 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MiddleWare\" />
-    <Folder Include="Migrations\" />
-    <Folder Include="Seed\" />
-    <Folder Include="Workers\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <Folder Include="Models\Dtos\CreateDtos\" />
+    <Folder Include="Models\Dtos\ResponseDto\" />
+    <Folder Include="Models\Dtos\UserIDentityDto\" />
   </ItemGroup>
 
 </Project>
