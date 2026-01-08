@@ -17,7 +17,10 @@ public class CarService : ICarService
 
     public async Task<List<Car>> GetAsync(CarFilter filter)
     {
-        var q = _db.Cars.Include(x => x.Images).AsQueryable();
+        var q = _db.Cars
+            .Include(x => x.Images)
+            .Where(x => x.IsActive)
+            .AsQueryable();
 
         if (filter.PriceFrom != null)
             q = q.Where(x => x.Price >= filter.PriceFrom);
@@ -25,14 +28,22 @@ public class CarService : ICarService
         if (filter.PriceTo != null)
             q = q.Where(x => x.Price <= filter.PriceTo);
 
-        if (filter.YearFrom != null)
-            q = q.Where(x => x.Year >= filter.YearFrom);
+        if (filter.SortBy != null)
+        {
+            q = filter.SortBy switch
+            {
+                "price" => filter.Desc ? q.OrderByDescending(x => x.Price) : q.OrderBy(x => x.Price),
+                "year"  => filter.Desc ? q.OrderByDescending(x => x.Year)  : q.OrderBy(x => x.Year),
+                _       => q.OrderByDescending(x => x.CreatedAt)
+            };
+        }
 
-        if (filter.YearTo != null)
-            q = q.Where(x => x.Year <= filter.YearTo);
+        q = q.Skip((filter.Page - 1) * filter.PageSize)
+            .Take(filter.PageSize);
 
         return await q.ToListAsync();
     }
+
 
     public async Task<Car?> GetByIdAsync(Guid id)
     {

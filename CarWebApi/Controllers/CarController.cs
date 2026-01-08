@@ -1,3 +1,4 @@
+using Domain.Models.Entities;
 using Domain.Models.Filters;
 using Domain.Response;
 using Infrastructure.Services.Interfaces;
@@ -32,4 +33,24 @@ public class CarsController : ControllerBase
 
         return ApiResponse<object>.Ok(car);
     }
+    [HttpPost("{carId}/images")]
+    public async Task<IActionResult> UploadImage(
+        Guid carId,
+        IFormFile file,
+        [FromServices] IImageService imageService)
+    {
+        var url = await imageService.UploadAsync(file);
+
+        _db.CarImages.Add(new CarImage
+        {
+            Id = Guid.NewGuid(),
+            CarId = carId,
+            Url = url,
+            IsMain = false
+        });
+
+        await _db.SaveChangesAsync();
+        return Ok(url);
+    }
+
 }

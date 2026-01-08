@@ -8,4 +8,7 @@ public class CarFilter
     public int? YearTo { get; set; }
     public Guid? CityId { get; set; }
     public Guid? BrandId { get; set; }
+    public string? SortBy { get; set; } // price, year, date
+    public bool Desc { get; set; } = true;
+
 }
